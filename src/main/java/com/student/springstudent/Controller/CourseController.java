@@ -2,10 +2,9 @@ package com.student.springstudent.Controller;
 
 import com.student.springstudent.Error.CourseNotFoundException;
 import com.student.springstudent.Repository.CourseRepository;
+import com.student.springstudent.Service.CourseService;
 import com.student.springstudent.entity.Course;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,10 @@ import java.util.List;
 public class CourseController {
 
     @Autowired
-    public CourseRepository courseRepository;
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private CourseService courseService;
 
     @GetMapping("/")
     public String welcomeMessage(){
@@ -42,5 +44,10 @@ public class CourseController {
     @DeleteMapping("/courses/{courseId}")
     public void deleteCourseById(@PathVariable  Long courseId){
         courseRepository.deleteById(courseId);
+    }
+
+    @GetMapping("/courses/count")
+    public Long numberOfCourses(){
+        return courseService.coursesCount();
     }
 }
