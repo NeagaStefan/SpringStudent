@@ -37,6 +37,6 @@ public class Teacher {
 
 
     )
-//    @JsonIgnore
+    @JsonIgnore
     private List<Course> courses;
 }

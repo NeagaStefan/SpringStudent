@@ -26,24 +26,29 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    public ResponseEntity<List<Course>> getAllCourses(){
-        return ResponseEntity.ok(courseRepository.findAll());
+    public ResponseEntity<List<Course>> getAllCourses()throws CourseNotFoundException{
+        return ResponseEntity.ok(courseService.findAll());
 
     }
     @GetMapping("/courses/{courseName}")
     public ResponseEntity<List<Course>> getAllCoursesByTitle(@PathVariable String courseName)throws CourseNotFoundException {
-        return ResponseEntity.ok(courseRepository.findAllByTitle(courseName)) ;
+        return ResponseEntity.ok(courseService.findAllByTitle(courseName)) ;
+
+    }
+    @GetMapping("/courses/{courseId}")
+    public ResponseEntity<Course> getCourseById(@PathVariable("courseId") Long courseId)throws CourseNotFoundException {
+        return ResponseEntity.ok(courseService.findById(courseId).orElseThrow(()-> new CourseNotFoundException("The course was not found")));
 
     }
 
     @PostMapping("/courses")
     public ResponseEntity<Course> saveACourse(@RequestBody Course course){
-        return ResponseEntity.ok(courseRepository.save(course));
+        return ResponseEntity.ok(courseService.save(course));
     }
 
     @DeleteMapping("/courses/{courseId}")
     public void deleteCourseById(@PathVariable  Long courseId){
-        courseRepository.deleteById(courseId);
+        courseService.deleteById(courseId);
     }
 
     @GetMapping("/courses/count")
