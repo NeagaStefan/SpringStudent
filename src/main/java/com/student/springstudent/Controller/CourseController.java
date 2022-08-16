@@ -4,6 +4,7 @@ import com.student.springstudent.Error.CourseNotFoundException;
 import com.student.springstudent.Repository.CourseRepository;
 import com.student.springstudent.Service.CourseService;
 import com.student.springstudent.entity.Course;
+import com.student.springstudent.entity.CourseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,44 +14,68 @@ import java.util.List;
 @RestController
 public class CourseController {
 
-    @Autowired
-    private CourseRepository courseRepository;
 
-    @Autowired
+    private CourseRepository courseRepository;
     private CourseService courseService;
 
+    @Autowired
+
+    private CourseController( CourseService courseService, CourseRepository courseRepository){
+        this.courseRepository = courseRepository;
+        this.courseService =courseService;
+    }
+    //Displays a welcome message
     @GetMapping("/")
     public String welcomeMessage(){
         return "Welcome to the school database";
 
     }
-
+    //Displays all courses
+    //Done
     @GetMapping("/courses")
-    public ResponseEntity<List<Course>> getAllCourses()throws CourseNotFoundException{
+    public ResponseEntity<List<CourseDto>> getAllCourses()throws CourseNotFoundException{
         return ResponseEntity.ok(courseService.findAll());
-
     }
-    @GetMapping("/courses/{courseName}")
-    public ResponseEntity<List<Course>> getAllCoursesByTitle(@PathVariable String courseName)throws CourseNotFoundException {
-        return ResponseEntity.ok(courseService.findAllByTitle(courseName)) ;
 
-    }
-    @GetMapping("/courses/{courseId}")
-    public ResponseEntity<Course> getCourseById(@PathVariable("courseId") Long courseId)throws CourseNotFoundException {
-        return ResponseEntity.ok(courseService.findById(courseId).orElseThrow(()-> new CourseNotFoundException("The course was not found")));
+    //Displays a course by title
+    //Done
+    @GetMapping("/courses/")
+    public ResponseEntity<List<CourseDto>> getAllCoursesByTitle(@RequestParam String name)throws CourseNotFoundException {
+        return ResponseEntity.ok(courseService.findAllByTitleIgnoreCase(name)) ;
 
     }
 
+    //Displays a course by id
+    //Done
+    @GetMapping("/courses/{id}")
+    public ResponseEntity<CourseDto> getCourseById(@PathVariable("id") Long id)throws CourseNotFoundException {
+        return ResponseEntity.ok(courseService.findById(id).getBody());
+
+    }
+
+    //Saves a new course
+    //Done
     @PostMapping("/courses")
-    public ResponseEntity<Course> saveACourse(@RequestBody Course course){
-        return ResponseEntity.ok(courseService.save(course));
+    public ResponseEntity<Course> saveACourse(@RequestBody CourseDto courseDto){
+        return ResponseEntity.ok().body(courseService.save(courseDto));
     }
 
+    //Updates a course by title
+    //TODO
+//    @PutMapping("/courses/{title}")
+//    public ResponseEntity<Course> updateACourse(@PathVariable ("title") String title, @RequestBody CourseDto courseDto){
+//        return ResponseEntity.ok().body(courseService.update(title,courseDto));
+//    }
+
+    //Deletes a course
+    //Done
     @DeleteMapping("/courses/{courseId}")
     public void deleteCourseById(@PathVariable  Long courseId){
         courseService.deleteById(courseId);
     }
 
+    //Displays the number of courses
+    //Done
     @GetMapping("/courses/count")
     public Long numberOfCourses(){
         return courseService.coursesCount();

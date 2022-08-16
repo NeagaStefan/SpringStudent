@@ -3,13 +3,15 @@ package com.student.springstudent.Service;
 import com.student.springstudent.Error.CourseNotFoundException;
 import com.student.springstudent.Repository.CourseRepository;
 import com.student.springstudent.entity.Course;
+import com.student.springstudent.entity.CourseDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -25,34 +27,51 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.count();
 
     }
-    public List<Course> findAllByTitle(String title) throws CourseNotFoundException{
-        try{
-            return courseRepository.findAllByTitle(title);
-        }catch (NoSuchElementException exception){
-            throw new CourseNotFoundException("There were no courses with the title"+title);
+    //Todo de facut metode separate de conversie cu transient
+    public List<CourseDto> findAllByTitleIgnoreCase(String title) throws CourseNotFoundException{
+        return courseRepository.findAllByTitleIgnoreCase(title).stream().map(course -> modelMapper.map(course,CourseDto.class)).collect(Collectors.toList());
 
-        }
+    }
+    //Done
+    @Override
+    public List<CourseDto> findAll() {
 
+        return courseRepository.findAll().stream().map(course -> modelMapper.map(course,CourseDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public List<Course> findAll() {
-        return courseRepository.findAll();
+    public ResponseEntity<CourseDto> findById(Long courseId) {
+        Course course = courseRepository.findById(courseId).get();
+        CourseDto courseResponse= modelMapper.map(course,CourseDto.class);
+        return ResponseEntity.ok().body(courseResponse);
     }
 
     @Override
-    public Optional<Course> findById(Long courseId) {
-        return courseRepository.findById(courseId);
-    }
-
-    @Override
-    public Course save(Course course) {
-        return courseRepository.save(course);
+    public Course save(CourseDto courseDto) {
+        Course courseRequest = modelMapper.map(courseDto,Course.class);
+        return courseRepository.save(courseRequest);
     }
 
     @Override
     public void deleteById(Long courseId) {
+        courseRepository.deleteById(courseId);
+    }
 
+    @Override
+    public Course update(String title, CourseDto courseDto) {
+        Course courseRequest = modelMapper.map(courseDto, Course.class);
+        Course courseDb = courseRepository.findByTitle(title);
+        if(Objects.nonNull(courseRequest.getCredit())){
+            courseDb.setCredit(courseRequest.getCredit());
+        }
+        if(Objects.nonNull(courseRequest.getTeacher())){
+            courseDb.setTeacher(courseRequest.getTeacher());
+        }
+        courseDb.setTitle(title);
+
+        return courseRepository.save(courseDb);
     }
 
 }
+//TODO input validation on tdo
+//Todo querrys

@@ -2,6 +2,8 @@ package com.student.springstudent.Service;
 
 import com.student.springstudent.Error.CourseNotFoundException;
 import com.student.springstudent.entity.Course;
+import com.student.springstudent.entity.CourseDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +15,15 @@ public interface CourseService {
 
 //    Page<Course> findByTitleContaining(String title, Pageable pageRequest);
 
-    List<Course> findAllByTitle(String title) throws CourseNotFoundException;
+    List<CourseDto> findAllByTitleIgnoreCase(String title) throws CourseNotFoundException;
 
-    List<Course> findAll();
+    List<CourseDto> findAll();
 
-    Optional<Course> findById(Long courseId);
+    ResponseEntity<CourseDto> findById(Long courseId);
 
-    Course save(Course course);
+    Course save(CourseDto courseDto);
 
     void deleteById(Long courseId);
+
+    Course update(String title,CourseDto courseDto);
 }
