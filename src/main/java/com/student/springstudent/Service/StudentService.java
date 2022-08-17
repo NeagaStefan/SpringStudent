@@ -6,7 +6,7 @@ import com.student.springstudent.entity.StudentDto;
 import java.util.List;
 
 public interface StudentService {
-    Student updateStudent(Long studentId, Student student);
+    Student updateStudent(Long studentId, StudentDto studentDto);
 
     List<StudentDto> findAll();
 

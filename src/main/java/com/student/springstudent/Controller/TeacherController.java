@@ -1,7 +1,6 @@
 package com.student.springstudent.Controller;
 
 import com.student.springstudent.Error.TeacherNotFoundException;
-import com.student.springstudent.Repository.TeacherRepository;
 import com.student.springstudent.Service.TeacherService;
 import com.student.springstudent.entity.Teacher;
 import com.student.springstudent.entity.TeacherDto;
@@ -14,13 +13,11 @@ import java.util.List;
 @RestController
 public class TeacherController {
 
-        private TeacherRepository teacherRepository;
-        private TeacherService teacherService;
+    private TeacherService teacherService;
 
     @Autowired
-    private TeacherController ( TeacherRepository teacherRepository, TeacherService teacherService){
+    private TeacherController ( TeacherService teacherService){
 
-        this.teacherRepository = teacherRepository;
         this.teacherService = teacherService;
     }
     //Displays the teachers
@@ -64,7 +61,7 @@ public class TeacherController {
     }
 
     //Updates a teacher
-    //Todo
+    //Done
     @PostMapping("/teachers/{id}")
     public ResponseEntity<Teacher> updateTeacher(@PathVariable("id") Long teacherId, @RequestBody TeacherDto teacherDto) throws TeacherNotFoundException {
         return ResponseEntity.ok(teacherService.updateTeacher(teacherId, teacherDto));

@@ -51,10 +51,10 @@ public class StudentController {
     }
 
     //Updates a student
-    //TOdo
+    //Done
     @PostMapping("/students/{id}")
-    public Student updateAStudent(@PathVariable ("id") Long studentId, @RequestBody Student student){
-        return studentService.updateStudent(studentId, student);
+    public Student updateAStudent(@PathVariable ("id") Long studentId, @RequestBody StudentDto studentDto){
+        return studentService.updateStudent(studentId, studentDto);
 
     }
 }

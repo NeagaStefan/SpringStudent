@@ -77,13 +77,11 @@ public class CourseServiceImpl implements CourseService {
 
 
     private CourseDto convertToDTo(Course course) {
-        CourseDto courseDto = modelMapper.map(course, CourseDto.class);
-        return courseDto;
+        return (modelMapper.map(course, CourseDto.class));
     }
 
     private Course convertToEntity(CourseDto courseDto){
-        Course course = modelMapper.map(courseDto,Course.class);
-        return course;
+        return (modelMapper.map(courseDto,Course.class));
     }
 }
 

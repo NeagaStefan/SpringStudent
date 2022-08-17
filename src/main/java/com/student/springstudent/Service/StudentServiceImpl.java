@@ -5,7 +5,6 @@ import com.student.springstudent.entity.Student;
 import com.student.springstudent.entity.StudentDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,16 +23,17 @@ public class StudentServiceImpl implements  StudentService{
     }
 
     @Override
-    public Student updateStudent(Long studentId, Student student){
+    public Student updateStudent(Long studentId, StudentDto studentDto){
+        Student studentRequest = convertToEntity(studentDto);
         Student student1 = studentRepository.findById(studentId).get();
-        if(Objects.nonNull(student.getFirstName())&& !"".equalsIgnoreCase(student.getFirstName())){
-            student1.setFirstName(student.getFirstName());
+        if(Objects.nonNull(studentRequest.getFirstName())&& !"".equalsIgnoreCase(studentRequest.getFirstName())){
+            student1.setFirstName(studentRequest.getFirstName());
         }
-        if(Objects.nonNull(student.getLastName())&& !"".equalsIgnoreCase(student.getLastName())){
-            student1.setLastName(student.getLastName());
+        if(Objects.nonNull(studentRequest.getLastName())&& !"".equalsIgnoreCase(studentRequest.getLastName())){
+            student1.setLastName(studentRequest.getLastName());
         }
-        if(Objects.nonNull(student.getEmail())&& !"".equalsIgnoreCase(student.getEmail())){
-            student1.setEmail(student.getEmail());
+        if(Objects.nonNull(studentRequest.getEmail())&& !"".equalsIgnoreCase(studentRequest.getEmail())){
+            student1.setEmail(studentRequest.getEmail());
         }
         return studentRepository.save(student1);
     }
@@ -45,8 +45,15 @@ public class StudentServiceImpl implements  StudentService{
 
     @Override
     public Student save(StudentDto studentDto) {
-        Student studentRequest = modelMapper.map(studentDto, Student.class);
+        Student studentRequest = convertToEntity(studentDto);
         return studentRepository.save(studentRequest);
         
+    }
+    public StudentDto convertToDto(Student student) {
+        return (modelMapper.map(student, StudentDto.class));
+
+    }
+    public  Student convertToEntity(StudentDto studentDto){
+        return (modelMapper.map(studentDto, Student.class));
     }
 }
