@@ -1,6 +1,5 @@
 package com.student.springstudent.Service;
 
-import com.student.springstudent.Error.CourseNotFoundException;
 import com.student.springstudent.Repository.CourseRepository;
 import com.student.springstudent.entity.Course;
 import com.student.springstudent.entity.CourseDto;
@@ -8,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +30,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     //Todo de facut metode separate de conversie cu transient
-    public List<CourseDto> findAllByTitleIgnoreCase(String title) throws CourseNotFoundException {
+    public List<CourseDto> findAllByTitleIgnoreCase(String title) {
         return courseRepository.findAllByTitleIgnoreCase(title).stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
 
     }

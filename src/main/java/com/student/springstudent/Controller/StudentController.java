@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class StudentController {
     //Saves a student
     //Done
     @PostMapping("/students")
-    public ResponseEntity<Student> saveAStudent(@RequestBody StudentDto studentDto) {
+    public ResponseEntity<Student> saveAStudent(@Valid @RequestBody StudentDto studentDto) {
         return  ResponseEntity.ok().body(studentService.save(studentDto));
     }
 
@@ -53,7 +54,7 @@ public class StudentController {
     //Updates a student
     //Done
     @PostMapping("/students/{id}")
-    public Student updateAStudent(@PathVariable ("id") Long studentId, @RequestBody StudentDto studentDto){
+    public Student updateAStudent(@Valid @PathVariable ("id") Long studentId, @RequestBody StudentDto studentDto){
         return studentService.updateStudent(studentId, studentDto);
 
     }

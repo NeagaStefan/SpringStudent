@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -36,9 +37,9 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.getTeacherById(id).getBody());
 
     }
+
     //Displays a teacher by first name
     //Done
-
     @GetMapping("/teachers/")
     public List<TeacherDto> fetchTeacherByFirstNameIgnoreCase(@RequestParam String lastName){
 
@@ -63,7 +64,7 @@ public class TeacherController {
     //Updates a teacher
     //Done
     @PostMapping("/teachers/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable("id") Long teacherId, @RequestBody TeacherDto teacherDto) throws TeacherNotFoundException {
+    public ResponseEntity<Teacher> updateTeacher(@Valid @PathVariable("id") Long teacherId, @RequestBody TeacherDto teacherDto) throws TeacherNotFoundException {
         return ResponseEntity.ok(teacherService.updateTeacher(teacherId, teacherDto));
     }
 
@@ -75,7 +76,7 @@ public class TeacherController {
     }
 
     @PutMapping("/teachers/")
-    public void updateTheLastName(@RequestParam Long id, @RequestParam String name, @RequestBody TeacherDto teacherDto) {
+    public void updateTheLastName(@Valid @RequestParam Long id, @RequestParam String name, @RequestBody TeacherDto teacherDto) {
         ResponseEntity.ok(teacherService.changeTeacherLastName(teacherDto, id, name));
     }
 }
