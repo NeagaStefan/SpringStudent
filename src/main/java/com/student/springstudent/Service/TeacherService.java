@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TeacherService  {
-    Teacher updateTeacher(Long teacherId, Teacher teacher) throws TeacherNotFoundException;
+    Teacher updateTeacher(Long teacherId, TeacherDto teacherDto) throws TeacherNotFoundException;
 
     Long teacherCount() throws TeacherNotFoundException;
 
-    Teacher changeTeacherLastName(Teacher teacher,Long id, String lastName) throws TeacherNotFoundException;
+    Teacher changeTeacherLastName(TeacherDto teacherDto,Long id, String lastName) throws TeacherNotFoundException;
 
     List<TeacherDto> fetchTeachersByFirstNameIgnoreCase(String firstName);
 

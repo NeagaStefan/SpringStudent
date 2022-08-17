@@ -17,38 +17,41 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
     private CourseRepository courseRepository;
     private ModelMapper modelMapper;
+
     @Autowired
-    public void CourseBeams (CourseRepository courseRepository,ModelMapper modelMapper) {
+    public void CourseBeams(CourseRepository courseRepository, ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
         this.courseRepository = courseRepository;
     }
 
-    public Long coursesCount(){
+    public Long coursesCount() {
         return courseRepository.count();
 
     }
+
     //Todo de facut metode separate de conversie cu transient
-    public List<CourseDto> findAllByTitleIgnoreCase(String title) throws CourseNotFoundException{
-        return courseRepository.findAllByTitleIgnoreCase(title).stream().map(course -> modelMapper.map(course,CourseDto.class)).collect(Collectors.toList());
+    public List<CourseDto> findAllByTitleIgnoreCase(String title) throws CourseNotFoundException {
+        return courseRepository.findAllByTitleIgnoreCase(title).stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
 
     }
+
     //Done
     @Override
     public List<CourseDto> findAll() {
 
-        return courseRepository.findAll().stream().map(course -> modelMapper.map(course,CourseDto.class)).collect(Collectors.toList());
+        return courseRepository.findAll().stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
     }
 
     @Override
     public ResponseEntity<CourseDto> findById(Long courseId) {
         Course course = courseRepository.findById(courseId).get();
-        CourseDto courseResponse= modelMapper.map(course,CourseDto.class);
+        CourseDto courseResponse = convertToDTo(course);
         return ResponseEntity.ok().body(courseResponse);
     }
 
     @Override
     public Course save(CourseDto courseDto) {
-        Course courseRequest = modelMapper.map(courseDto,Course.class);
+        Course courseRequest = convertToEntity(courseDto);
         return courseRepository.save(courseRequest);
     }
 
@@ -59,12 +62,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course update(String title, CourseDto courseDto) {
-        Course courseRequest = modelMapper.map(courseDto, Course.class);
+        Course courseRequest = convertToEntity(courseDto);
         Course courseDb = courseRepository.findByTitle(title);
-        if(Objects.nonNull(courseRequest.getCredit())){
+        if (Objects.nonNull(courseRequest.getCredit())) {
             courseDb.setCredit(courseRequest.getCredit());
         }
-        if(Objects.nonNull(courseRequest.getTeacher())){
+        if (Objects.nonNull(courseRequest.getTeacher())) {
             courseDb.setTeacher(courseRequest.getTeacher());
         }
         courseDb.setTitle(title);
@@ -72,6 +75,18 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.save(courseDb);
     }
 
+
+    private CourseDto convertToDTo(Course course) {
+        CourseDto courseDto = modelMapper.map(course, CourseDto.class);
+        return courseDto;
+    }
+
+    private Course convertToEntity(CourseDto courseDto){
+        Course course = modelMapper.map(courseDto,Course.class);
+        return course;
+    }
 }
+
+
 //TODO input validation on tdo
 //Todo querrys

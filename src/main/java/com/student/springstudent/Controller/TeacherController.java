@@ -66,8 +66,8 @@ public class TeacherController {
     //Updates a teacher
     //Todo
     @PostMapping("/teachers/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable("id") Long teacherId, @RequestBody Teacher teacher) throws TeacherNotFoundException {
-        return ResponseEntity.ok(teacherService.updateTeacher(teacherId, teacher));
+    public ResponseEntity<Teacher> updateTeacher(@PathVariable("id") Long teacherId, @RequestBody TeacherDto teacherDto) throws TeacherNotFoundException {
+        return ResponseEntity.ok(teacherService.updateTeacher(teacherId, teacherDto));
     }
 
     //Displays the total of teachers
@@ -78,7 +78,7 @@ public class TeacherController {
     }
 
     @PutMapping("/teachers/")
-    public void updateTheLastName(@RequestParam Long id, @RequestParam String name, @RequestBody Teacher teacher) {
-        ResponseEntity.ok(teacherService.changeTeacherLastName(teacher, id, name));
+    public void updateTheLastName(@RequestParam Long id, @RequestParam String name, @RequestBody TeacherDto teacherDto) {
+        ResponseEntity.ok(teacherService.changeTeacherLastName(teacherDto, id, name));
     }
 }

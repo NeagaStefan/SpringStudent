@@ -30,17 +30,18 @@ public class TeacherServiceImpl implements TeacherService {
             this.modelMapper = modelMapper;
     }
 
-    public Teacher updateTeacher(Long teacherId, Teacher teacher){
+    public Teacher updateTeacher(Long teacherId, TeacherDto teacherDto){
+        Teacher teacherResponse = convertToEntity(teacherDto);
         Teacher teacherDB = teacherRepository.findById(teacherId).orElseThrow(()-> new TeacherNotFoundException("The teacher was not found"));
 
-        if(Objects.nonNull(teacher.getFirstName())&& !"".equalsIgnoreCase(teacher.getFirstName())){
-            teacherDB.setFirstName(teacher.getFirstName());
+        if(Objects.nonNull(teacherResponse.getFirstName())&& !"".equalsIgnoreCase(teacherResponse.getFirstName())){
+            teacherDB.setFirstName(teacherResponse.getFirstName());
         }
-        if(Objects.nonNull(teacher.getLastName())&& !"".equalsIgnoreCase(teacher.getLastName())){
-            teacherDB.setLastName(teacher.getLastName());
+        if(Objects.nonNull(teacherResponse.getLastName())&& !"".equalsIgnoreCase(teacherResponse.getLastName())){
+            teacherDB.setLastName(teacherResponse.getLastName());
         }
-        if(Objects.nonNull(teacher.getCourses())&& !"".equalsIgnoreCase(teacher.getCourses().toString())){
-            teacherDB.setCourses(teacher.getCourses());
+        if(Objects.nonNull(teacherResponse.getCourses())&& !"".equalsIgnoreCase(teacherResponse.getCourses().toString())){
+            teacherDB.setCourses(teacherResponse.getCourses());
         }
         return teacherRepository.save(teacherDB);
     }
@@ -49,7 +50,8 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.count();
     }
 
-    public Teacher changeTeacherLastName(Teacher teacher,Long id, String lastName) throws TeacherNotFoundException {
+    public Teacher changeTeacherLastName(TeacherDto teacherDto, Long id, String lastName) throws TeacherNotFoundException {
+        Teacher teacherRequest = convertToEntity(teacherDto);
         Teacher teacherDB =  teacherRepository.findById(id).get();
         try{
             teacherDB.getTeacherId();
@@ -57,10 +59,10 @@ public class TeacherServiceImpl implements TeacherService {
         }catch (NoSuchElementException exception){
             throw new TeacherNotFoundException("There is no teacher with this id");
         }
-        if(Objects.nonNull(teacher.getFirstName())&& !"".equalsIgnoreCase(teacher.getFirstName())){
-            teacherDB.setFirstName(teacher.getFirstName());
+        if(Objects.nonNull(teacherRequest.getFirstName())&& !"".equalsIgnoreCase(teacherRequest.getFirstName())){
+            teacherDB.setFirstName(teacherDto.getFirstName());
         }
-        if(Objects.nonNull(teacher.getLastName())&&!"".equalsIgnoreCase(teacher.getLastName())){
+        if(Objects.nonNull(teacherRequest.getLastName())&&!"".equalsIgnoreCase(teacherRequest.getLastName())){
             teacherDB.setLastName(lastName);
         }
         return teacherRepository.save(teacherDB);
@@ -73,9 +75,8 @@ public class TeacherServiceImpl implements TeacherService {
 
     }
 
+    //Done
     @Override
-    //TODO make DTO for all
-
 
    public void deleteById(Long id){
         try{
@@ -88,13 +89,15 @@ public class TeacherServiceImpl implements TeacherService {
 
     }
 
+    //Done
     @Override
     public ResponseEntity<TeacherDto> getTeacherById(Long id) {
         Teacher teacher = teacherRepository.findById(id).get();
-        TeacherDto teacherResponse = modelMapper.map(teacher, TeacherDto.class);
+        TeacherDto teacherResponse = convertToDTo(teacher);
         return ResponseEntity.ok().body(teacherResponse);
     }
 
+    //Done
     @Transactional
     @Override
     public void deleteTeacherByFirstName(String firstName) {
@@ -105,6 +108,16 @@ public class TeacherServiceImpl implements TeacherService {
     public List<TeacherDto> findAll() {
 
         return teacherRepository.findAll().stream().map(teacher ->  modelMapper.map(teacher, TeacherDto.class)).collect(Collectors.toList());
+    }
+
+
+    private TeacherDto convertToDTo(Teacher teacher ) {
+        return (modelMapper.map(teacher, TeacherDto.class));
+    }
+
+    private Teacher convertToEntity(TeacherDto teacherDto){
+        return (modelMapper.map(teacherDto, Teacher.class));
+
     }
 
 
